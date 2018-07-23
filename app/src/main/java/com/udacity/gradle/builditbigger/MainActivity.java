@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.udacity.gradle.builditbigger.tasks.JokeTask;
 import com.udacity.gradle.builditbigger.tasks.OnJokeLoadedCallback;
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
                 startActivity(intent);
             }
-        }).execute(this);
+        }).execute();
     }
 
 

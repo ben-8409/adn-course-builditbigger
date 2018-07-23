@@ -1,7 +1,7 @@
 package com.udacity.gradle.builditbigger.tasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.test.espresso.idling.CountingIdlingResource;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -11,17 +11,24 @@ import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
 import java.io.IOException;
 
-public class JokeTask extends AsyncTask<Context, Void, String> {
+public class JokeTask extends AsyncTask<Void, Void, String> {
     private final OnJokeLoadedCallback mCallback;
+    private CountingIdlingResource mCountingIdlingResource;
     private MyApi mApiService;
-    private Context mContext;
 
     public JokeTask(OnJokeLoadedCallback callback) {
         mCallback = callback;
     }
 
+    public JokeTask(OnJokeLoadedCallback onJokeLoadedCallback, CountingIdlingResource countingResource) {
+        mCallback = onJokeLoadedCallback;
+        mCountingIdlingResource = countingResource;
+
+    }
+
     @Override
-    protected String doInBackground(Context... contexts) {
+    protected String doInBackground(Void... voids) {
+        if (mCountingIdlingResource != null) mCountingIdlingResource.increment();
         if(mApiService == null) {
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -40,8 +47,6 @@ public class JokeTask extends AsyncTask<Context, Void, String> {
             mApiService = builder.build();
         }
 
-        mContext = contexts[0];
-
         try {
             return mApiService.sayJoke().execute().getData();
         } catch (IOException e) {
@@ -53,6 +58,9 @@ public class JokeTask extends AsyncTask<Context, Void, String> {
     protected void onPostExecute(String s) {
         if(mCallback != null) {
             mCallback.onDone(s);
+        }
+        if (mCountingIdlingResource != null) {
+            mCountingIdlingResource.decrement();
         }
     }
 }

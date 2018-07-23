@@ -56,9 +56,10 @@ dependencies {
 
     freeImplementation 'com.google.android.gms:play-services-ads:11.8.0'
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    implementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.2'
 
     testImplementation 'junit:junit:4.12'
 }
